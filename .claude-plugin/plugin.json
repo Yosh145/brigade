@@ -1,9 +1,18 @@
 {
   "name": "brigade",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A model-routing kitchen: one head chef writes recipes, a Sonnet cook and a Haiku prep cook do the work",
   "author": {
     "name": "Yosh145"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "multi-agent",
+    "subagents",
+    "model-routing",
+    "orchestration",
+    "workflow",
+    "delegation",
+    "status-line"
+  ]
 }
