@@ -1,3 +1,5 @@
+<img src="docs/header.png" alt="brigade: a wireframe chef's toque beside the roles of the kitchen: head chef (Opus), cook (Sonnet), prep (Haiku)" width="100%">
+
 # brigade
 
 A model-routing kitchen for multi-agent work in Claude Code. The main session is the **head chef**: it writes recipes (task
