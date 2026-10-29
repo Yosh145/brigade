@@ -1,4 +1,4 @@
-<img src="docs/header.png" alt="brigade: a wireframe chef's toque beside the roles of the kitchen: head chef (Opus), cook (Sonnet), prep (Haiku)" width="100%">
+![brigade: a wireframe chef's toque beside the roles of the kitchen: head chef (Opus), cook (Sonnet), prep (Haiku)](docs/header.png)
 
 # brigade
 
@@ -22,19 +22,30 @@ While cooks run, the status line shows who is on the stove (`brigade: cook 05 ·
 Born on the KBOS-V4 X-Plane conversion (2026-10-27): there, Haiku did setup, baselines and builds, Sonnet the ports and
 investigations, and one Opus head chef only read reports.
 
-## What the hooks do
+## Hooks
 
-The mod has one hooks module, `hooks/register.ts`. It reads no files, credentials or environment, sends nothing anywhere,
-and never blocks or rewrites anything Claude Code does.
+The mod has one hooks module, `hooks/register.ts`, with four hooks. None of them reads files, credentials or environment
+variables, sends data anywhere, or blocks or rewrites anything Claude Code does. The agents (`agents/*.md`) and commands
+(`commands/*.md`) are plain markdown prompts.
 
-| Hook | What it does | What it changes |
-|---|---|---|
-| `session.start` | Registers the `/brigade` command | Adds `/brigade` to the slash commands |
-| `command.run` (`/brigade` only) | Answers with the help text | Nothing else: the help is all `/brigade` does |
-| `agent.spawn` | When a `brigade:cook` or `brigade:prep` agent starts, notes its id and the recipe number from its description | Only the mod's own status line. Every spawn, the mod's and others', is passed on unchanged, and an error in this hook never stops one |
-| `turn.complete` | When a noted cook finishes, drops it | Only the mod's own status line, cleared when no cook is left. Every turn's answer is passed on unchanged |
+**`session.start`**
+- What the hook does: registers the `/brigade` help command when a session starts.
+- What the hook changes: adds `/brigade` to the session's slash commands. Nothing else.
 
-The agents (`agents/*.md`) and commands (`commands/*.md`) are plain markdown prompts.
+**`command.run`** (only for `/brigade`)
+- What the hook does: answers `/brigade` with a short help text.
+- What the hook changes: nothing. Other commands never reach it.
+
+**`agent.spawn`**
+- What the hook does: when a `brigade:cook` or `brigade:prep` agent starts, notes the agent's id and the recipe number from
+  its description, in memory.
+- What the hook changes: only the mod's own status line (`brigade: cook 05 · prep 10`). Every spawn, brigade's and every
+  other, is passed on unchanged, and an error in this hook never stops one.
+
+**`turn.complete`**
+- What the hook does: when an agent it noted finishes, forgets it.
+- What the hook changes: only the mod's own status line, cleared when no cook is left. Every turn's answer is passed on
+  unchanged.
 
 ## Install
 
