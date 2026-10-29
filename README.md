@@ -22,6 +22,20 @@ While cooks run, the status line shows who is on the stove (`brigade: cook 05 ·
 Born on the KBOS-V4 X-Plane conversion (2026-10-27): there, Haiku did setup, baselines and builds, Sonnet the ports and
 investigations, and one Opus head chef only read reports.
 
+## What the hooks do
+
+The mod has one hooks module, `hooks/register.ts`. It reads no files, credentials or environment, sends nothing anywhere,
+and never blocks or rewrites anything Claude Code does.
+
+| Hook | What it does | What it changes |
+|---|---|---|
+| `session.start` | Registers the `/brigade` command | Adds `/brigade` to the slash commands |
+| `command.run` (`/brigade` only) | Answers with the help text | Nothing else: the help is all `/brigade` does |
+| `agent.spawn` | When a `brigade:cook` or `brigade:prep` agent starts, notes its id and the recipe number from its description | Only the mod's own status line. Every spawn, the mod's and others', is passed on unchanged, and an error in this hook never stops one |
+| `turn.complete` | When a noted cook finishes, drops it | Only the mod's own status line, cleared when no cook is left. Every turn's answer is passed on unchanged |
+
+The agents (`agents/*.md`) and commands (`commands/*.md`) are plain markdown prompts.
+
 ## Install
 
 At the prompt of a Claude Code terminal session:

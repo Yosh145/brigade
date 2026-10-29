@@ -1,5 +1,13 @@
 {
   "name": "brigade",
-  "owner": { "name": "Yosh145" },
-  "plugins": [{ "name": "brigade", "source": "./" }]
+  "description": "brigade: a model-routing kitchen for Claude Code",
+  "owner": {
+    "name": "Yosh145"
+  },
+  "plugins": [
+    {
+      "name": "brigade",
+      "source": "./"
+    }
+  ]
 }

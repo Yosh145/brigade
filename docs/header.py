@@ -1,6 +1,6 @@
 """README header for the brigade mod: a glowing wireframe chef's toque beside the title (FXPC header style).
 
-Run: python3 docs/header.py docs/header.png (numpy, Pillow, the B612 fonts in ~/.local/share/fonts/b612)."""
+Run: python3 docs/header.py docs/header.png, or --icon .claude-plugin/icon.png for the square icon (numpy, Pillow, the B612 fonts in ~/.local/share/fonts/b612)."""
 import math
 import sys
 from pathlib import Path
@@ -8,9 +8,11 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
-W, H, SS = 2400, 900, 2
+ICON = "--icon" in sys.argv
+ARGS = [a for a in sys.argv[1:] if a != "--icon"]
+W, H, SS = (1024, 1024, 2) if ICON else (2400, 900, 2)
 FONTS = Path.home() / ".local/share/fonts/b612/fonts/Orig"
-OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("header.png")
+OUT = Path(ARGS[0]) if ARGS else Path("icon.png" if ICON else "header.png")
 
 CREAM = np.array([255, 222, 180])
 EMBER = np.array([255, 140, 70])
@@ -19,6 +21,42 @@ CLAUDE = (217, 119, 87)
 
 def font(name, size):
     return ImageFont.truetype(str(FONTS / name), size * SS)
+
+
+def draw_text(img):
+    # --- text --------------------------------------------------------------------------------------
+    text = Image.new("RGB", img.size)
+    dt = ImageDraw.Draw(text)
+    x0 = int(W * 0.47 * SS)
+    dt.text((x0, 150 * SS), "brigade", font=font("B612-Bold.otf", 150), fill=tuple(CREAM))
+    dt.text((x0 + 6 * SS, 340 * SS), "a model-routing kitchen for Claude Code", font=font("B612-Regular.otf", 46),
+            fill=(235, 190, 150))
+
+    mono, mono_b = font("B612Mono-Regular.otf", 33), font("B612Mono-Bold.otf", 33)
+    rows = [("HEAD CHEF", "opus  ", "writes recipes, decides gates"),
+            ("COOK     ", "sonnet", "code, tests, one commit per item"),
+            ("PREP     ", "haiku ", "exact commands, short reports")]
+    y = 455 * SS
+    for role, model, does in rows:
+        dt.ellipse([x0 + 6 * SS, y + 14 * SS, x0 + 20 * SS, y + 28 * SS], fill=CLAUDE)
+        dt.text((x0 + 42 * SS, y), role, font=mono_b, fill=CLAUDE)
+        dt.text((x0 + 262 * SS, y), model, font=mono, fill=(250, 214, 170))
+        dt.text((x0 + 420 * SS, y), does, font=mono, fill=(200, 165, 140))
+        y += 62 * SS
+
+    # the status line the mod draws, as a pill
+    pill = "brigade: cook 05 · prep 10"
+    pf = font("B612Mono-Regular.otf", 28)
+    pw_ = dt.textlength(pill, font=pf)
+    py = 690 * SS
+    dt.rounded_rectangle([x0 + 4 * SS, py - 14 * SS, x0 + 4 * SS + pw_ + 48 * SS, py + 50 * SS], radius=32 * SS,
+                         outline=(150, 90, 66), width=2 * SS)
+    dt.text((x0 + 28 * SS, py), pill, font=pf, fill=(235, 190, 150))
+
+    img = ImageChops.add(img, ImageChops.multiply(text.filter(ImageFilter.GaussianBlur(9 * SS)),
+                                                  Image.new("RGB", img.size, (110, 110, 110))))
+    img = ImageChops.lighter(img, text)
+    return img
 
 
 # --- the toque: a pleated surface of revolution with a puffed crown -----------------------------
@@ -57,8 +95,8 @@ Ry = np.array([[math.cos(yaw), 0, math.sin(yaw)], [0, 1, 0], [-math.sin(yaw), 0,
 Rx = np.array([[1, 0, 0], [0, math.cos(pitch), -math.sin(pitch)], [0, math.sin(pitch), math.cos(pitch)]])
 V = V @ (Rx @ Ry).T
 
-scale = H * 0.255
-cx, cy = W * 0.235, H * 0.5
+scale = H * (0.235 if ICON else 0.255)
+cx, cy = W * (0.5 if ICON else 0.235), H * 0.5
 SX = (V[..., 0] * scale + cx) * SS
 SY = (-V[..., 1] * scale + cy) * SS
 D = (V[..., 2] - V[..., 2].min()) / np.ptp(V[..., 2])   # 0 back .. 1 front
@@ -87,45 +125,14 @@ yy, xx = np.mgrid[0:H * SS, 0:W * SS].astype(np.float32)
 t = (yy / (H * SS))[..., None]
 top, bot = np.array([13, 15, 28]), np.array([52, 24, 18])
 bg = top + (bot - top) * t ** 1.3
-r2 = ((xx - cx * SS) / (W * SS * 0.30)) ** 2 + ((yy - (cy + scale * 1.05) * SS) / (H * SS * 0.42)) ** 2
+r2 = ((xx - cx * SS) / (W * SS * (0.6 if ICON else 0.30))) ** 2 + ((yy - (cy + scale * 1.05) * SS) / (H * SS * 0.42)) ** 2
 bg += np.exp(-r2)[..., None] * np.array([120, 50, 20])
 bg = Image.fromarray(np.clip(bg, 0, 255).astype(np.uint8))
 
 glow = wire.filter(ImageFilter.GaussianBlur(12 * SS))
 img = ImageChops.add(ImageChops.add(bg, glow), wire)
 
-# --- text --------------------------------------------------------------------------------------
-text = Image.new("RGB", img.size)
-dt = ImageDraw.Draw(text)
-x0 = int(W * 0.47 * SS)
-dt.text((x0, 150 * SS), "brigade", font=font("B612-Bold.otf", 150), fill=tuple(CREAM))
-dt.text((x0 + 6 * SS, 340 * SS), "a model-routing kitchen for Claude Code", font=font("B612-Regular.otf", 46),
-        fill=(235, 190, 150))
-
-mono, mono_b = font("B612Mono-Regular.otf", 33), font("B612Mono-Bold.otf", 33)
-rows = [("HEAD CHEF", "opus  ", "writes recipes, decides gates"),
-        ("COOK     ", "sonnet", "code, tests, one commit per item"),
-        ("PREP     ", "haiku ", "exact commands, short reports")]
-y = 455 * SS
-for role, model, does in rows:
-    dt.ellipse([x0 + 6 * SS, y + 14 * SS, x0 + 20 * SS, y + 28 * SS], fill=CLAUDE)
-    dt.text((x0 + 42 * SS, y), role, font=mono_b, fill=CLAUDE)
-    dt.text((x0 + 262 * SS, y), model, font=mono, fill=(250, 214, 170))
-    dt.text((x0 + 420 * SS, y), does, font=mono, fill=(200, 165, 140))
-    y += 62 * SS
-
-# the status line the mod draws, as a pill
-pill = "brigade: cook 05 · prep 10"
-pf = font("B612Mono-Regular.otf", 28)
-pw_ = dt.textlength(pill, font=pf)
-py = 690 * SS
-dt.rounded_rectangle([x0 + 4 * SS, py - 14 * SS, x0 + 4 * SS + pw_ + 48 * SS, py + 50 * SS], radius=32 * SS,
-                     outline=(150, 90, 66), width=2 * SS)
-dt.text((x0 + 28 * SS, py), pill, font=pf, fill=(235, 190, 150))
-
-img = ImageChops.add(img, ImageChops.multiply(text.filter(ImageFilter.GaussianBlur(9 * SS)),
-                                              Image.new("RGB", img.size, (110, 110, 110))))
-img = ImageChops.lighter(img, text)
+img = img if ICON else draw_text(img)
 img = img.resize((W, H), Image.LANCZOS)
 OUT.parent.mkdir(parents=True, exist_ok=True)
 img.save(OUT, optimize=True)

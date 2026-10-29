@@ -2,6 +2,9 @@
   "name": "brigade",
   "version": "0.2.0",
   "description": "A model-routing kitchen: one head chef writes recipes, a Sonnet cook and a Haiku prep cook do the work",
-  "author": { "name": "Yosh145" },
-  "license": "MIT"
+  "author": {
+    "name": "Yosh145"
+  },
+  "license": "MIT",
+  "icon": ".claude-plugin/icon.png"
 }
