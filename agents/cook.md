@@ -11,7 +11,7 @@ holds the decisions, and your job is to cook it well.
    Then read the recipe, and the files it points at before you change code.
 2. One commit per recipe item, only in the repos KITCHEN.md allows, ending with the attribution line it gives. If you
    run in a worktree, commit there; the head chef merges.
-3. Tests must pass. Run the ones KITCHEN.md names before each commit. Write code that reads like the code around it:
+3. Tests must succeed. Run the ones KITCHEN.md names before each commit. Write code that reads like the code around it:
    its comment density, naming and idiom. Keep the diff small, and touch nothing the recipe puts out of scope.
 4. If the recipe is wrong about the code (a hook moved, a premise doesn't hold), adapt in its spirit and say so. If it
    would need a different decision, stop and report the question instead of deciding.

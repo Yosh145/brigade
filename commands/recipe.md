@@ -9,7 +9,7 @@ As head chef, write a recipe for: $ARGUMENTS
    suggest `/brigade:init`. Name the file `work/recipes/NN-<short-name>.md`, NN the next free two-digit number (a
    follow-up to recipe 03 may be `03b`).
 2. Find out what the cook will need before writing: read the code the task touches, enough to name the files, the hook
-   points and the expected numbers. A recipe written blind passes the thinking to a cheaper model.
+   points and the expected numbers. A recipe written blind leaves the thinking to a cheaper model.
 3. Pick the cook honestly:
    - **prep (Haiku)** only if every step is an exact command with a result that checks itself;
    - **cook (Sonnet)** for code, investigation, or anything that needs reading and adapting;

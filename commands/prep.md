@@ -8,7 +8,7 @@ Dispatch a recipe to the prep cook. Arguments: `$ARGUMENTS` (the recipe number f
 1. Find `work/recipes/<NN>-*.md` from the project root. If there is none, or more than one, stop and say so. If its title
    line says `(cook, sonnet)`, say that it needs judgment and suggest `/brigade:cook <NN>` instead.
 2. Call the Agent tool with:
-   - `subagent_type: "brigade:prep"`, `run_in_background: true` (the agent sets its own low effort; pass none);
+   - `subagent_type: "brigade:prep"`, `run_in_background: true` (leave out `effort`: the agent sets its own low effort);
    - `description: "recipe <NN>: <its title, a few words>"` (the status line shows `prep <NN>` from it);
    - a prompt that gives: the recipe's absolute path; the project root; what the recipe can't know (each repo's HEAD
      commit, the current test counts, which cooks are running and on what); the notes, if any; and "reply with the
