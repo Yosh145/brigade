@@ -1,10 +1,16 @@
 {
   "name": "brigade",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A model-routing kitchen: one head chef writes recipes, a Sonnet cook and a Haiku prep cook do the work",
   "author": {
     "name": "Yosh145"
   },
+  "homepage": "https://github.com/Yosh145/brigade",
+  "repository": "https://github.com/Yosh145/brigade",
+  "documentationUrl": "https://github.com/Yosh145/brigade#readme",
+  "supportUrl": "https://github.com/Yosh145/brigade/issues",
+  "privacyPolicyUrl": "https://github.com/Yosh145/brigade/blob/main/PRIVACY.md",
+  "termsOfServiceUrl": "https://github.com/Yosh145/brigade/blob/main/TERMS.md",
   "license": "MIT",
   "keywords": [
     "multi-agent",
