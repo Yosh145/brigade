@@ -3,7 +3,9 @@
 # brigade
 
 A model-routing kitchen for multi-agent work in Claude Code. The main session is the **head chef**: it writes recipes (task
-briefs in `work/recipes/`), decides gates (`work/gates.md`) and reviews short reports. It doesn't cut vegetables.
+briefs in `work/recipes/`), decides gates (`work/gates.md`) and reviews short reports.
+
+Basically, "lower effort" models get delegated to lower effort tasks, where higher level details get delegated to higher effort models.
 
 - `brigade:cook` (Sonnet) cooks one recipe: code with tests, one commit per item, a report of 20 lines or fewer.
 - `brigade:prep` (Haiku, low effort) runs exact commands (setup, builds, checks, log summaries) and stops at judgment calls.
@@ -18,9 +20,6 @@ briefs in `work/recipes/`), decides gates (`work/gates.md`) and reviews short re
 - `/brigade`: a short help.
 
 While cooks run, the status line shows who is on the stove (`brigade: cook 05 · prep 10`).
-
-Born on the KBOS-V4 X-Plane conversion (2026-10-27): there, Haiku did setup, baselines and builds, Sonnet the ports and
-investigations, and one Opus head chef only read reports.
 
 ## Hooks
 
